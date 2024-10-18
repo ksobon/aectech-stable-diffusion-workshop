@@ -1,0 +1,179 @@
+﻿<Window
+    x:Name="Win"
+    x:Class="StableDiffusionMc.Revit.StableDiffusionApi.StableDiffusionApiView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+    mc:Ignorable="d"
+    >
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="Loaded">
+            <b:InvokeCommandAction Command="{Binding WindowLoaded}" CommandParameter="{Binding ElementName=Win}" />
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
+
+    <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="60" />
+		</Grid.RowDefinitions>
+		<Image Grid.Row="0"
+               Source="{Binding GeneratedImagePath, Mode=OneWay}"
+               Stretch="UniformToFill"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+               Height="1024"
+               Width="1024"
+				/>
+        <StackPanel Grid.Row="1"
+			HorizontalAlignment="Center"
+			Orientation="Vertical"
+			>
+            <StackPanel
+				Orientation="Horizontal"
+                HorizontalAlignment="Left"
+				>
+                <Label
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					Width="100"
+					Height="20">
+                    <TextBlock
+						Text="Prompt:"
+						Foreground="Black"
+						FontWeight="Bold" FontSize="10"
+						VerticalAlignment="Center"/>
+                </Label>
+                <TextBox
+					Name="PromptTextBox"
+					Text="Enter a prompt..."
+					TextChanged="TextBox_TextChanged"
+					GotFocus="TextBox_GotFocus"
+					LostFocus="TextBox_LostFocus"
+					Foreground="Gray"
+					FontSize="10"
+				
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					Width="500"
+					Height="20"/>
+            </StackPanel>
+            
+            <StackPanel
+				Orientation="Horizontal"
+                HorizontalAlignment="Left"
+				>
+                <Label HorizontalAlignment="Left" VerticalAlignment="Center" Width="100" Height="20">
+                    <TextBlock Text="Strength:" Foreground="Black" FontWeight="Bold" FontSize="10" VerticalAlignment="Center" />
+                </Label>
+
+                <TextBox
+					Name="StrengthTextBox"
+					Text="0.85"
+					TextChanged="TextBox_TextChanged"
+					GotFocus="TextBox_GotFocus"
+					LostFocus="TextBox_LostFocus"
+					Foreground="Gray"
+					FontSize="10"
+				
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					Width="100"
+					Height="20"/>
+
+                <Label HorizontalAlignment="Left" VerticalAlignment="Center" Width="100" Height="20">
+                    <TextBlock Text="GuidanceScale:" Foreground="Black" FontWeight="Bold" FontSize="10" VerticalAlignment="Center" />
+                </Label>
+                <TextBox
+					Name="GuidanceScaleTextBox"
+					Text="7.5"
+					TextChanged="TextBox_TextChanged"
+					GotFocus="TextBox_GotFocus"
+					LostFocus="TextBox_LostFocus"
+					Foreground="Gray"
+					FontSize="10"
+				
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					Width="100"
+					Height="20"/>
+
+                <Label HorizontalAlignment="Left" VerticalAlignment="Center" Width="100" Height="20">
+                    <TextBlock Text="ControlNetConditioningScale:" Foreground="Black" FontWeight="Bold" FontSize="10" VerticalAlignment="Center" />
+                </Label>
+                <TextBox
+					Name="ControlNetTextBox"
+					Text="0.5"
+					TextChanged="TextBox_TextChanged"
+					GotFocus="TextBox_GotFocus"
+					LostFocus="TextBox_LostFocus"
+					Foreground="Gray"
+					FontSize="10"
+
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					Width="100"
+					Height="20"/>
+
+                <Label HorizontalAlignment="Left" VerticalAlignment="Center" Width="100" Height="20">
+                    <TextBlock Text="NumInferenceSteps:" Foreground="Black" FontWeight="Bold" FontSize="10" VerticalAlignment="Center" />
+                </Label>
+                <TextBox
+					Name="InferenceStepsTextBox"
+					Text="50"
+					TextChanged="TextBox_TextChanged"
+					GotFocus="TextBox_GotFocus"
+					LostFocus="TextBox_LostFocus"
+					Foreground="Gray"
+					FontSize="10"
+
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					Width="100"
+					Height="20"/>
+            </StackPanel>
+            <StackPanel
+				Orientation="Horizontal"
+                HorizontalAlignment="Center"
+				>
+                <Button
+					Content="Capture"
+					Command="{Binding Capture, Mode=OneWay}"
+					CommandParameter="{Binding ElementName=Win}"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					Width="150"
+					Height="20" />
+                <Button
+                    Content="Generate"
+                    Command="{Binding Generate, Mode=OneWay}"
+                    CommandParameter="{Binding ElementName=Win}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="150"
+                    Height="20"
+                    Margin ="50,0,0,0"/>
+                <Button
+                    Content="Generate ONNX Text2Img"
+                    Command="{Binding GenerateOnnx, Mode=OneWay}"
+                    CommandParameter="{Binding ElementName=Win}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="150"
+                    Height="20"
+					Margin ="50,0,0,0"/>
+                <Button
+					Content="Generate ONNX Img2Img"
+					Command="{Binding GenerateOnnxImg2Img, Mode=OneWay}"
+					CommandParameter="{Binding ElementName=Win}"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					Width="150"
+					Height="20"
+					Margin ="50,0,0,0"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
