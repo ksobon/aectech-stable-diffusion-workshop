@@ -1,12 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using StableDiffusionMc.Revit.Core.Utilities.WPF;
-using System.Diagnostics;
 using System.Windows;
-using static StableDiffusionMc.Revit.StableDiffusionOnnx.StableDiffusionOnnxModel;
 
 namespace StableDiffusionMc.Revit.StableDiffusionApi
 {
-    public class StableDiffusionApiViewModel: ExtendedViewModelBase
+    public class StableDiffusionApiViewModel : ExtendedViewModelBase
     {
         public StableDiffusionApiModel Model { get; set; }
 
@@ -35,7 +33,7 @@ namespace StableDiffusionMc.Revit.StableDiffusionApi
             set { _generatedImagePath = value; OnPropertyChanged(); }
         }
 
-        private string _prompt= "Enter a prompt...";
+        private string _prompt = "Enter a prompt...";
         public string Prompt
         {
             get { return _prompt; }
@@ -112,7 +110,31 @@ namespace StableDiffusionMc.Revit.StableDiffusionApi
 
         private async void OnGenerate()
         {
-            throw new NotImplementedException();
+            var capturedImagePath = await Model.ExportViewAsImagePath();
+            if (string.IsNullOrEmpty(capturedImagePath))
+            {
+                MessageBox.Show("Failed to capture image");
+                return;
+            }
+
+            var generatedImagePath = await Model.SendToServerAsync(
+                capturedImagePath,
+                Prompt,
+                NegativePrompt,
+                NumInferenceSteps,
+                GuidanceScale,
+                ConronetConditioningScale,
+                Strength,
+                Seed
+                );
+
+            if (string.IsNullOrEmpty(generatedImagePath))
+            {
+                MessageBox.Show("Failed to generate image");
+                return;
+            }
+
+            GeneratedImagePath = generatedImagePath;
         }
 
         private async void OnGenerateOnnxImg2Img()
