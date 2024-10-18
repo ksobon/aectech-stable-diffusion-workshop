@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using StableDiffusionMc.Revit.Core.Utilities.WPF;
+using System.Diagnostics;
 using System.Windows;
+using static StableDiffusionMc.Revit.StableDiffusionOnnx.StableDiffusionOnnxModel;
 
 namespace StableDiffusionMc.Revit.StableDiffusionApi
 {
@@ -139,7 +141,41 @@ namespace StableDiffusionMc.Revit.StableDiffusionApi
 
         private async void OnGenerateOnnxImg2Img()
         {
-            throw new NotImplementedException();
+            var capturedImagePath = await Model.ExportViewAsImagePath();
+            if (string.IsNullOrEmpty(capturedImagePath))
+            {
+                MessageBox.Show("Failed to capture image");
+                return;
+            }
+
+            string generatedImagePath = null;
+
+            Debug.WriteLine("Starting Onnx Inference");
+            try
+            {
+                generatedImagePath = await InferWithOnnxStack(
+                capturedImagePath,
+                Prompt,
+                GuidanceScale,
+                (float)Strength
+                );
+
+                Debug.WriteLine("Finished Onnx Inference");
+
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
+
+            if (string.IsNullOrEmpty(generatedImagePath))
+            {
+                MessageBox.Show("Failed to generate image");
+                return;
+            }
+
+            GeneratedImagePath = generatedImagePath;
         }
 
         public override async void OnWindowLoaded(Window win)
