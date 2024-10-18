@@ -9,20 +9,20 @@ from diffusers.utils import load_image
 from PIL import Image
 import numpy as np
 
-model_id_text = "stabilityai/stable-diffusion-xl-base-1.0"
-model_id = "stabilityai/stable-diffusion-xl-refiner-1.0"
+# model_id_text = "stabilityai/stable-diffusion-xl-base-1.0"
+# model_id = "stabilityai/stable-diffusion-xl-refiner-1.0"
 
-pipe_text_to_image = StableDiffusionXLPipeline.from_pretrained(
-    model_id_text,
-    torch_dtype=torch.float16,
-    variant="fp16",
-    use_safetensors=True
-)
-pipe_text_to_image = pipe_text_to_image.to("cuda")
+# pipe_text_to_image = StableDiffusionXLPipeline.from_pretrained(
+#     model_id_text,
+#     torch_dtype=torch.float16,
+#     variant="fp16",
+#     use_safetensors=True
+# )
+# pipe_text_to_image = pipe_text_to_image.to("cuda")
 
-def text_to_image(prompt: str) -> Image:
-    image: Image = pipe_text_to_image(prompt=prompt).images[0]
-    return image
+# def text_to_image(prompt: str) -> Image:
+#     image: Image = pipe_text_to_image(prompt=prompt).images[0]
+#     return image
 
 control_net_model_id = "stabilityai/stable-diffusion-xl-base-1.0"
 controlnet = ControlNetModel.from_pretrained(

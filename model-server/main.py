@@ -7,7 +7,7 @@ from PIL import Image, ImageOps
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import FileResponse, StreamingResponse
 
-from ml import text_to_image, obtain_control_net_image
+from ml import obtain_control_net_image
 
 app = FastAPI()
 
@@ -15,13 +15,13 @@ app = FastAPI()
 def read_root():
     return {"Hello": "World"}
     
-@app.post("/text-to-image")
-async def generate_image_from_text(prompt: str = "Astronaut riding a horse"):
-    image = text_to_image(prompt)
-    memory_stream = io.BytesIO()
-    image.save(memory_stream, format="PNG")
-    memory_stream.seek(0)
-    return StreamingResponse(memory_stream, media_type="image/png")
+# @app.post("/text-to-image")
+# async def generate_image_from_text(prompt: str = "Astronaut riding a horse"):
+#     image = text_to_image(prompt)
+#     memory_stream = io.BytesIO()
+#     image.save(memory_stream, format="PNG")
+#     memory_stream.seek(0)
+#     return StreamingResponse(memory_stream, media_type="image/png")
 
 @app.post("/generate-controlnet")
 async def generate_control_net_image(
