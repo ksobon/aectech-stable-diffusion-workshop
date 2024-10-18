@@ -1,8 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
 
 namespace StableDiffusionMc.Revit.StableDiffusionApi
 {
@@ -41,7 +39,6 @@ namespace StableDiffusionMc.Revit.StableDiffusionApi
 
             Doc.ExportImage(options);
 
-
             await Task.Delay(100);
 
             //check if .png exists if not swap .png for .jpg and try again 
@@ -49,7 +46,6 @@ namespace StableDiffusionMc.Revit.StableDiffusionApi
             {
                 imagePath = imagePath.Replace(".png", ".jpg");
             }
-
 
             return imagePath;
         }
@@ -65,50 +61,7 @@ namespace StableDiffusionMc.Revit.StableDiffusionApi
             int seed = 42
             )
         {
-            if (!File.Exists(imagePath))
-            {
-                throw new FileNotFoundException($"The file at {imagePath} was not found.");
-            }
-
-            using (var client = new HttpClient())
-            {
-                var query = $"?prompt={prompt}&negative_prompt={negativePrompt}&num_inference_steps={numInferenceSteps}&guidance_scale={guidanceScale}&controlnet_conditioning_scale={contronetConditioningScale}&strength={strength}&seed={seed}";
-
-
-                client.BaseAddress = new Uri("http://127.0.0.1:8000");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                using (var imageStream = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
-                using (var content = new MultipartFormDataContent())
-                {
-                    var streamContent = new StreamContent(imageStream);
-                    streamContent.Headers.ContentType = new MediaTypeHeaderValue("image/png");
-                    content.Add(streamContent, "file", Path.GetFileName(imagePath));
-
-                    HttpResponseMessage response = await client.PostAsync($"/generate-controlnet-invert{query}", content);
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        using (var responseStream = await response.Content.ReadAsStreamAsync())
-                        {
-                            string generatedImageFileName = $"generated_{DateTime.Now:yyyyMMddHHmmss}.png";
-                            string generatedImagePath = Path.Combine(Path.GetTempPath(), generatedImageFileName);
-
-                            using (var fileStream = new FileStream(generatedImagePath, FileMode.Create, FileAccess.Write))
-                            {
-                                await responseStream.CopyToAsync(fileStream);
-                            }
-
-                            return generatedImagePath;
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception($"Error occurred while sending the image: {response.ReasonPhrase}");
-                    }
-                }
-            }
+            throw new NotImplementedException();
         }
 
         private string SanitizeFileName(string fileName)
