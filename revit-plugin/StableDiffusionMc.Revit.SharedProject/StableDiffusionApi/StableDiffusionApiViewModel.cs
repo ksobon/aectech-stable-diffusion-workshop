@@ -14,6 +14,8 @@ namespace StableDiffusionMc.Revit.StableDiffusionApi
 
         public RelayCommand Generate { get; set; }
 
+        public RelayCommand GenerateOnnx { get; set; }
+
         public RelayCommand Capture { get; set; }
 
         public RelayCommand GenerateOnnxImg2Img { get; set; }
@@ -100,6 +102,7 @@ namespace StableDiffusionMc.Revit.StableDiffusionApi
             Help = new RelayCommand(OnHelp);
             Capture = new RelayCommand((OnCapture));
             Generate = new RelayCommand(OnGenerate);
+            GenerateOnnx = new RelayCommand(OnGenerateOnnx);
             GenerateOnnxImg2Img = new RelayCommand(OnGenerateOnnxImg2Img);
         }
 
@@ -129,6 +132,45 @@ namespace StableDiffusionMc.Revit.StableDiffusionApi
                 Strength,
                 Seed
                 );
+
+            if (string.IsNullOrEmpty(generatedImagePath))
+            {
+                MessageBox.Show("Failed to generate image");
+                return;
+            }
+
+            GeneratedImagePath = generatedImagePath;
+        }
+
+        private async void OnGenerateOnnx()
+        {
+            var capturedImagePath = await Model.ExportViewAsImagePath();
+            if (string.IsNullOrEmpty(capturedImagePath))
+            {
+                MessageBox.Show("Failed to capture image");
+                return;
+            }
+
+            string generatedImagePath = null;
+
+            Debug.WriteLine("Starting Onnx Inference");
+            try
+            {
+                generatedImagePath = await InferWithOnnx(
+                capturedImagePath,
+                Prompt,
+                GuidanceScale,
+                Strength
+                );
+
+                Debug.WriteLine("Finished Onnx Inference");
+
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+
 
             if (string.IsNullOrEmpty(generatedImagePath))
             {

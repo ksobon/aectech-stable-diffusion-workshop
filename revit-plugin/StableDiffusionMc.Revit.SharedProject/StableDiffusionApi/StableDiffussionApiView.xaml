@@ -164,6 +164,16 @@
 					Width="150"
 					Height="20"
 					Margin ="50,0,0,0"/>
+                <Button
+					Content="Generate ONNX Text2Img"
+					Command="{Binding GenerateOnnx, Mode=OneWay}"
+					CommandParameter="{Binding ElementName=Win}"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					Width="150"
+					Height="20"
+					Margin ="50,0,0,0"/>
+                
             </StackPanel>
         </StackPanel>
     </Grid>

@@ -5,7 +5,9 @@ using OnnxStack.StableDiffusion.Pipelines;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using StableDiffusionMc.Revit.StableDiffusion.ML.OnnxRuntime;
 using System.Diagnostics;
+using System.IO;
 
 namespace StableDiffusionMc.Revit.StableDiffusionOnnx
 {
@@ -57,6 +59,42 @@ namespace StableDiffusionMc.Revit.StableDiffusionOnnx
             await pipeline.UnloadAsync();
 
             return outputImagePath;
+        }
+
+        public static async Task<string> InferWithOnnx(
+            string imagePath,
+            string prompt,
+            double guidanceScale = 7.5,
+            double strength = 0.85
+            )
+        {
+            var modelsBasePath = @"C:\Users\patry\source\repos\stable-diffusion-v1-4";
+            var config = new StableDiffusion.ML.OnnxRuntime.StableDiffusionConfig
+            {
+                NumInferenceSteps = 15,
+                GuidanceScale = guidanceScale,
+                ExecutionProviderTarget = StableDiffusion.ML.OnnxRuntime.StableDiffusionConfig.ExecutionProvider.Cuda,
+                DeviceId = 0,
+                TextEncoderOnnxPath = Path.Combine(modelsBasePath, "text_encoder", "model.onnx"),
+                UnetOnnxPath = Path.Combine(modelsBasePath, "unet", "model.onnx"),
+                VaeDecoderOnnxPath = Path.Combine(modelsBasePath, "vae_decoder", "model.onnx"),
+            };
+
+            Debug.WriteLine($"Inference with prompt: {prompt}");
+
+            var image = UNet.Inference(prompt, config);
+
+            if (image == null)
+            {
+                throw new Exception("Failed to generate image");
+            }
+
+            var generatedImageFileName = $"generated_{DateTime.Now:yyyyMMddHHmmss}.png";
+            var genImgPath = Path.Combine(Path.GetTempPath(), generatedImageFileName);
+
+            image.SaveAsPng(genImgPath);
+
+            return genImgPath;
         }
 
         public static Image<Rgba32> CropAndResizeImage(Image<Rgba32> image, int width = 1024, int height = 1024)
